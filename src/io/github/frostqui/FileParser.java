@@ -27,6 +27,7 @@ public class FileParser {
 		
 	}
 	
+	
 	public void read() {
 		
          BufferedReader input;
@@ -37,8 +38,8 @@ public class FileParser {
              
              rows = Integer.parseInt(pieces[0]);                
              columns = Integer.parseInt(pieces[1]);
-             ing_per_slice = Integer.parseInt(pieces[1]);
-             cells_per_slice = Integer.parseInt(pieces[1]);
+             ing_per_slice = Integer.parseInt(pieces[2]);
+             cells_per_slice = Integer.parseInt(pieces[3]);
              
              
              
@@ -62,8 +63,18 @@ public class FileParser {
 	
 	
 	public void write() {
+		System.out.println();
+		
 		System.out.println("Rows: "+ pizza.getRows());
 		System.out.println("Columns: "+ pizza.getColumns());
+		System.out.println("Ingredients per slice: "+ pizza.getIng_per_slice());
+		System.out.println("Max number of cells per slice: "+ pizza.getCells_per_slice());
+		
+		System.out.println();
+		
+		System.out.println("Pizza: ");
+		
+		System.out.println();
 		
 		for (int i = 0; i<pizza.getRows(); i++) {
 			for (int j = 0; j<pizza.getColumns(); j++) {
@@ -75,4 +86,9 @@ public class FileParser {
 		}
 	
 	}
+	
+	public Pizza getPizza() {
+		return this.pizza;
+	}
+	
 }

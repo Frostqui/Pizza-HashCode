@@ -4,8 +4,8 @@ public class Pizza {
 
 	private int rows;
 	private int columns;
-	private int ing_per_slice;
-	private int cells_per_slice;
+	private int ing_per_slice;  // Minimun number of ingredients per slice
+	private int cells_per_slice;  // Minimun number of cells per slice
 	
 	private String[][] cells;
 	
