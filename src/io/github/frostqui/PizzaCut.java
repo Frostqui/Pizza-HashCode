@@ -20,36 +20,89 @@ public class PizzaCut {
 	private int end_row;
 	private int end_column;
 
+	private ArrayList<Integer> multiples;
+
 	public PizzaCut(Pizza pizza) {
 		this.pizza = pizza;
 		this.slices = new ArrayList<Slice>();
+		this.multiples = new ArrayList<Integer>();
 	}
 
 	public void solution() {
 
-		int x = 2;
-		int y = 1;
+		int multiplo = pizza.getCells_per_slice();
 
+		for (int x = 1; x < multiplo; x++) {
+			if (isMultiple(multiplo, x)) {
+				multiples.add(x);
+
+			}
+		}
+		
 		int i = 0;
 		int j = 0;
+		
+		int x = 0;
+		int y = 0;
+		
+		
+		while (x != pizza.getRows() && y != pizza.getColumns()) {
+			
+		for (int c = 1; c < pizza.getCells_per_slice(); c++) {
+			for (int d = 1; d < pizza.getCells_per_slice(); d++) {
 
-		while (x < pizza.getRows() && y < pizza.getColumns()) {
+				
+				if ((c + 1) * (d + 1) <= pizza.getCells_per_slice()) {
 
-			System.out.println("-------");
-			for (int a = i; a <= x; a++) {
-				for (int b = j; b <= y; b++) {
+					 x = c;
+					 y = d;
 
-					checkCount(a, b);
+					
 
+					System.out.println("////////////////");
+					
+					System.out.println( x + " x " + y);
+					
+				
+					System.out.println("////////////////");
+
+					
+						
+						
+						while (y <= pizza.getRows() && x <= pizza.getColumns()) {
+							
+							System.out.println("-------");
+						for (int a = i; a <= x; a++) {
+							for (int b = j; b <= y; b++) {
+
+								if (a  <= pizza.getRows() && b  <= pizza.getColumns()) {
+									checkCount(a, b);
+								}
+
+							}
+
+						}
+
+						if (y + d <= pizza.getColumns()) {
+							
+							j += d + 1;
+							y += d + 1;
+						} else if (x + c <= pizza.getRows()) {
+						
+							i += d + 1;
+							x += d + 1;
+						}
+
+					}
+				}
+					x = c;
+					y = d;
+
+					i = 0;
+					j = 0;
 				}
 
 			}
-
-			
-
-			j += 2;
-			y += 2;
-
 		}
 
 	}
@@ -102,7 +155,7 @@ public class PizzaCut {
 		}
 	}
 
-	public static boolean esMultiplo(int n1, int n2) {
+	public static boolean isMultiple(int n1, int n2) {
 		if (n1 % n2 == 0)
 			return true;
 		else
