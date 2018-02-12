@@ -10,7 +10,9 @@ public class Main {
 		FileParser p = new FileParser("src/io/github/frostqui/example.in");
 		
 		p.read();
-		//p.write();
+		p.write();
+		
+		System.out.println("----------------------------------");
 		
 	
 		PizzaCut pc = new PizzaCut(p.getPizza());
