@@ -51,7 +51,11 @@ public class PizzaCut {
 			}
 		}
 
-		printSlices(slicesInCell);
+		for(int i = 2; i<pizza.getCells_per_slice(); i++) {
+			combination(this.slicesInCell,i);
+
+		}
+		//printSlices(slicesInCell);
 
 	}
 
@@ -163,8 +167,7 @@ public class PizzaCut {
 		msroom_count = 0;
 
 		
-		combination(this.slicesInCell,2);
-
+	
 		// slices.add(new Slice(startRow,startColumn, endRow, endColumn));
 
 	}
@@ -263,6 +266,7 @@ public class PizzaCut {
 
 					//do something with the combination e.g. add to list or print
 					print(combination, elements);
+					calculateCount(combination, elements);
 					index++;				
 				}
 				else{
@@ -290,7 +294,7 @@ public class PizzaCut {
 		int npr=nf/nrf;
 		int ncr=npr/rf; 
 		
-		System.out.println("C("+n+","+r+") = "+ ncr);
+	//	System.out.println("C("+n+","+r+") = "+ ncr);
 
 		return ncr;
 	}
@@ -306,11 +310,27 @@ public class PizzaCut {
 
 	public static void print(int[] combination, ArrayList<Slice> slices){
 
-		String output = "";
+	
 		for(int z = 0 ; z < combination.length;z++){
 			printSlice(slices.get(combination[z]));
 		}
-		System.out.println(output);
+		
+		
+		
+	}
+	
+	public static void calculateCount(int[] combination, ArrayList<Slice> slices) {
+		Slice s;
+		int count = 0;
+		for(int z = 0 ; z < combination.length;z++){
+			
+			s = slices.get(combination[z]);
+			count += ((s.getEnd_row() - s.getStarting_row()) + 1)
+					* ((s.getEnd_column() - s.getStarting_column()) + 1);
+			
+		}
+		System.out.println(count);
+		System.out.println();
 	}
 }
 
