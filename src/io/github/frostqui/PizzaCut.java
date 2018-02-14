@@ -12,6 +12,7 @@ public class PizzaCut {
 
 	private ArrayList<Slice> slices;
 	private ArrayList<Slice> slicesInCell;
+	private static ArrayList<Slice> bestSlices;
 
 	int count = 0;
 
@@ -30,7 +31,7 @@ public class PizzaCut {
 	private int r;
 	private int c;
 
-	int count2 = 0;
+	static int count2 = 0;
 
 	private ArrayList<Integer> multiples;
 
@@ -51,11 +52,12 @@ public class PizzaCut {
 			}
 		}
 
-		for(int i = 2; i<pizza.getCells_per_slice(); i++) {
-			combination(this.slicesInCell,i);
+		for (int i = 2; i < pizza.getCells_per_slice(); i++) {
+			combination(this.slicesInCell, i);
 
 		}
-		//printSlices(slicesInCell);
+
+		printSlices(bestSlices);
 
 	}
 
@@ -166,8 +168,6 @@ public class PizzaCut {
 		tomato_count = 0;
 		msroom_count = 0;
 
-		
-	
 		// slices.add(new Slice(startRow,startColumn, endRow, endColumn));
 
 	}
@@ -188,16 +188,13 @@ public class PizzaCut {
 					+ s.getEnd_column());
 		}
 	}
-	
-	public static void printSlice(Slice value) {
-		
-		
-			
-			System.out.println(value.getStarting_row() + "  " + value.getStarting_column() + "  " + value.getEnd_row() + "  "
-					+ value.getEnd_column());
-		
-	}
 
+	public static void printSlice(Slice value) {
+
+		System.out.println(value.getStarting_row() + "  " + value.getStarting_column() + "  " + value.getEnd_row()
+				+ "  " + value.getEnd_column());
+
+	}
 
 	public static boolean isMultiple(int n1, int n2) {
 		if (n1 % n2 == 0)
@@ -206,131 +203,163 @@ public class PizzaCut {
 			return false;
 	}
 
-	
-	public void bestSlices() {
+	public void bestSlices(int count, int[] combination, ArrayList<Slice> slices) {
 		// System.out.println(slicesInCell.size());
-		for (int i = 0; i < slicesInCell.size(); i++) {
 
-			Slice s = slicesInCell.get(i);
-			int count = ((s.getEnd_row() - s.getStarting_row()) + 1)
-					* ((s.getEnd_column() - s.getStarting_column()) + 1);
-			System.out.println(count + "   " + count2);
-
-			if (count > count2) {
-				// System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-				slices.add(s);
-				count2 = count;
+		if (count > count2 && checkIfValid(combination, slices)) {
+			// System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+			bestSlices = new ArrayList<Slice>();
+			for (int i = 0; i < combination.length; i++) {
+				bestSlices.add(slices.get(combination[i]));
 			}
 
-			// System.out.println(count + " & " + count2);
-
+			count2 = count;
 		}
-		count2 = 0;
-		slicesInCell.removeAll(slicesInCell);
+
+		// System.out.println(count + " & " + count2);
+
 	}
-	public static void combination(ArrayList<Slice>  elements, int K){
+
+	public void combination(ArrayList<Slice> elements, int K) {
 
 		// get the length of the array
-		// e.g. for {'A','B','C','D'} => N = 4 
+		// e.g. for {'A','B','C','D'} => N = 4
 		int N = elements.size();
-		
-		if(K > N){
+
+		if (K > N) {
 			System.out.println("Invalid input, K > N");
 			return;
 		}
 		// calculate the possible combinations
 		// e.g. c(4,2)
-		c(N,K);
-		
-		// get the combination by index 
+		c(N, K);
+
+		// get the combination by index
 		// e.g. 01 --> AB , 23 --> CD
 		int combination[] = new int[K];
-		
+
 		// position of current index
-		//  if (r = 1)				r*
-		//	index ==>		0	|	1	|	2
-		//	element ==>		A	|	B	|	C
-		int r = 0;		
+		// if (r = 1) r*
+		// index ==> 0 | 1 | 2
+		// element ==> A | B | C
+		int r = 0;
 		int index = 0;
-		
-		while(r >= 0){
+
+		while (r >= 0) {
 			// possible indexes for 1st position "r=0" are "0,1,2" --> "A,B,C"
 			// possible indexes for 2nd position "r=1" are "1,2,3" --> "B,C,D"
-			
-			// for r = 0 ==> index < (4+ (0 - 2)) = 2
-			if(index <= (N + (r - K))){
-					combination[r] = index;
-					
-				// if we are at the last position print and increase the index
-				if(r == K-1){
 
-					//do something with the combination e.g. add to list or print
-					print(combination, elements);
-					calculateCount(combination, elements);
-					index++;				
-				}
-				else{
+			// for r = 0 ==> index < (4+ (0 - 2)) = 2
+			if (index <= (N + (r - K))) {
+				combination[r] = index;
+
+				// if we are at the last position print and increase the index
+				if (r == K - 1) {
+
+					// do something with the combination e.g. add to list or print
+					// print(combination, elements);
+					// print(combination, elements);
+					//printSlices(slices);
+					System.out.println(checkIfValid(combination, elements));
+					if (checkIfValid(combination, elements)) {
+						System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeee");
+						bestSlices(calculateCount(combination, elements), combination, elements);
+
+					}
+
+					index++;
+				} else {
 					// select index for next position
-					index = combination[r]+1;
-					r++;										
+					index = combination[r] + 1;
+					r++;
 				}
-			}
-			else{
+			} else {
 				r--;
-				if(r > 0)
-					index = combination[r]+1;
+				if (r > 0)
+					index = combination[r] + 1;
 				else
-					index = combination[0]+1;	
-			}			
+					index = combination[0] + 1;
+			}
 		}
 	}
-	
 
-	
-	public static int c(int n, int r){
-		int nf=fact(n);
-		int rf=fact(r);
-		int nrf=fact(n-r);
-		int npr=nf/nrf;
-		int ncr=npr/rf; 
-		
-	//	System.out.println("C("+n+","+r+") = "+ ncr);
+	public static int c(int n, int r) {
+		int nf = fact(n);
+		int rf = fact(r);
+		int nrf = fact(n - r);
+		int npr = nf / nrf;
+		int ncr = npr / rf;
+
+		// System.out.println("C("+n+","+r+") = "+ ncr);
 
 		return ncr;
 	}
-	
-	public static int fact(int n)
-	{
-		if(n == 0)
+
+	public static int fact(int n) {
+		if (n == 0)
 			return 1;
 		else
-			return n * fact(n-1);
+			return n * fact(n - 1);
 	}
-	
 
-	public static void print(int[] combination, ArrayList<Slice> slices){
+	public static void print(int[] combination, ArrayList<Slice> slices) {
 
-	
-		for(int z = 0 ; z < combination.length;z++){
+		for (int z = 0; z < combination.length; z++) {
 			printSlice(slices.get(combination[z]));
 		}
-		
-		
-		
+
 	}
-	
-	public static void calculateCount(int[] combination, ArrayList<Slice> slices) {
+
+	public boolean checkIfValid(int[] combination, ArrayList<Slice> slices) {
+		Slice s;
+		Slice s2;
+		
+		boolean valid = true;
+
+		for (int i = 0; i < combination.length; i++) {
+			for (int j = i + 1; j < combination.length; j++) {
+				if (i == j) {
+					return false;
+				}
+
+				s = slices.get(combination[i]);
+				s2 = slices.get(combination[j]);
+
+				//printSlice(s);
+			//	printSlice(s2);
+		//		System.out.println("----------------------------");
+
+				if (s.getStarting_row() > s2.getEnd_row() || s.getEnd_row() < s2.getStarting_row() && s.getEnd_column() < s2.getStarting_column() || s.getStarting_column() > s2.getEnd_column()) { // R1 is below R1
+					
+					valid = valid && true;
+					System.out.println("eeeeeeeeeeeeeeeeeeeeeeee");
+
+				}else {
+					valid = valid && false;
+					//System.out.println(valid);
+				}
+			}
+		}
+		
+		//printSlices(slices);
+		
+		System.out.println(valid);
+		System.out.println("----------------------------");
+
+		return valid;
+
+	}
+
+	public static int calculateCount(int[] combination, ArrayList<Slice> slices) {
 		Slice s;
 		int count = 0;
-		for(int z = 0 ; z < combination.length;z++){
-			
+		for (int z = 0; z < combination.length; z++) {
+
 			s = slices.get(combination[z]);
-			count += ((s.getEnd_row() - s.getStarting_row()) + 1)
-					* ((s.getEnd_column() - s.getStarting_column()) + 1);
-			
+			count += ((s.getEnd_row() - s.getStarting_row()) + 1) * ((s.getEnd_column() - s.getStarting_column()) + 1);
+
 		}
-		System.out.println(count);
-		System.out.println();
+		return count;
+
 	}
 }
-
