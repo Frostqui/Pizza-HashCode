@@ -2,15 +2,13 @@ package io.github.frostqui;
 
 public class Main {
 
-	private static int total_slices;
-	
-	
+		
 	public static void main(String args[]){
 		
-		FileParser p = new FileParser("src/io/github/frostqui/example.in");
+		FileParser p = new FileParser("src/io/github/frostqui/medium.in");
 		
 		p.read();
-		p.write();
+		//p.write();
 		
 		System.out.println("----------------------------------");
 		
@@ -19,11 +17,7 @@ public class Main {
 		
 		pc.solution();
 		
-		System.out.println("");
-		System.out.println("Solución: ");
-		
-	
-		
+			
 						
 	}
 	

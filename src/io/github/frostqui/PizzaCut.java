@@ -1,10 +1,6 @@
 package io.github.frostqui;
 
-import java.rmi.server.SocketSecurityException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 public class PizzaCut {
 
@@ -19,60 +15,48 @@ public class PizzaCut {
 	int tomato_count = 0;
 	int msroom_count = 0;
 
-	private int starting_row;
-	private int starting_column;
-
-	private int row_size;
-	private int column_size;
-
-	private int row;
-	private int column;
-
-	private int r;
-	private int c;
-
-	static int count2 = 0;
-
-	private ArrayList<Integer> multiples;
+	static int count_aux = 0;
 
 	public PizzaCut(Pizza pizza) {
 		this.pizza = pizza;
 		this.slices = new ArrayList<Slice>();
 		this.slicesInCell = new ArrayList<Slice>();
-		this.multiples = new ArrayList<Integer>();
 	}
 
 	public void solution() {
 
 		for (int i = 0; i < pizza.getRows(); i++) {
 			for (int j = 0; j < pizza.getColumns(); j++) {
-				// System.out.println(i + " " + j);
 				createSlice(i, j);
 
 			}
 		}
+		
+		
 
-		for (int i = 2; i < pizza.getCells_per_slice(); i++) {
+		for (int i = 2; i < 12; i++) {
+			
 			combination(this.slicesInCell, i);
 
 		}
 
+		System.out.println("");
+		System.out.println("Solution: ");
+		System.out.println("");
 		printSlices(bestSlices);
 
 	}
 
 	public void createSlice(int row, int column) {
-		// System.out.println(column);
+
 		for (int i = row; i < pizza.getCells_per_slice(); i++) {
 			for (int j = column; j < pizza.getCells_per_slice(); j++) {
 
 				int x = row + i;
 				int y = column + j;
-				// System.out.println(row + " " + column + " x " + x + " " + y);
 
 				if (checkValidSlice(row, column, x, y)) {
 
-					// System.out.println(i + " " + x + " x " + j + " " + y);
 					checkCount(row, column, x, y);
 				}
 
@@ -82,10 +66,18 @@ public class PizzaCut {
 
 	}
 
+	/**
+	 * 
+	 * Check if the coordinates are inside the pizza
+	 * 
+	 * @param startRow
+	 * @param startColumn
+	 * @param endRow
+	 * @param endColumn
+	 * @return
+	 */
 	public boolean checkValidSlice(int startRow, int startColumn, int endRow, int endColumn) {
-		// System.out.println(((endRow - startRow) + 1 ) * ((endColumn - startColumn) +
-		// 1));
-		// System.out.println(pizza.getCells_per_slice());
+
 		if ((endRow - startRow + 1) * (endColumn - startColumn + 1) <= pizza.getCells_per_slice()
 				&& endRow < pizza.getRows() && endColumn < pizza.getColumns()) {
 
@@ -95,13 +87,19 @@ public class PizzaCut {
 		}
 	}
 
+	/**
+	 * Check if the coordinates meet minimum ingredients for a slice
+	 * 
+	 * @param startRow
+	 * @param startColumn
+	 * @param endRow
+	 * @param endColumn
+	 */
+
 	public void checkCount(int startRow, int startColumn, int endRow, int endColumn) {
 
 		tomato_count = 0;
 		msroom_count = 0;
-
-		System.out.println("Row " + startRow + " to " + endRow);
-		System.out.println("Column " + startColumn + " to " + endColumn);
 
 		if (startRow != endRow && startColumn != endColumn) {
 
@@ -133,7 +131,7 @@ public class PizzaCut {
 			for (int j = startColumn; j <= endColumn; j++) {
 
 				if (pizza.getCells()[startRow][j].charAt(0) == 'T') {
-					// System.out.println(tomato_count);
+
 					tomato_count++;
 				} else {
 					msroom_count++;
@@ -154,31 +152,26 @@ public class PizzaCut {
 
 		}
 
-		System.out.println("Tomato: " + tomato_count + " Msroom: " + msroom_count);
+		// System.out.println("Tomato: " + tomato_count + " Msroom: " + msroom_count);
 
-		System.out.println("-------------------------");
+		// System.out.println("-------------------------");
 
 		if (tomato_count >= pizza.getIng_per_slice() && msroom_count >= pizza.getIng_per_slice()) {
-			// System.out.println("eeeeeeeee");
+
 			slicesInCell.add(new Slice(startRow, startColumn, endRow, endColumn));
-			// slices.add(new Slice(startRow,startColumn, endRow, endColumn));
 
 		}
 
 		tomato_count = 0;
 		msroom_count = 0;
 
-		// slices.add(new Slice(startRow,startColumn, endRow, endColumn));
-
 	}
 
-	public ArrayList<Slice> getSlices() {
-		return slices;
-	}
-
-	public void setSlices(ArrayList<Slice> slices) {
-		this.slices = slices;
-	}
+	/**
+	 * Print slices to screen
+	 * 
+	 * @param values
+	 */
 
 	public void printSlices(ArrayList<Slice> values) {
 		System.out.println(values.size());
@@ -189,6 +182,12 @@ public class PizzaCut {
 		}
 	}
 
+	/**
+	 * Print specified slice
+	 * 
+	 * @param value
+	 */
+
 	public static void printSlice(Slice value) {
 
 		System.out.println(value.getStarting_row() + "  " + value.getStarting_column() + "  " + value.getEnd_row()
@@ -196,35 +195,41 @@ public class PizzaCut {
 
 	}
 
-	public static boolean isMultiple(int n1, int n2) {
-		if (n1 % n2 == 0)
-			return true;
-		else
-			return false;
-	}
-
+	/**
+	 * Put in bestSlices array the combination of the best slices
+	 * 
+	 * @param count
+	 * @param combination
+	 * @param slices
+	 */
 	public void bestSlices(int count, int[] combination, ArrayList<Slice> slices) {
-		// System.out.println(slicesInCell.size());
 
-		if (count > count2 && checkIfValid(combination, slices)) {
-			// System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+		if (count > count_aux && checkIfValid(combination, slices)) {
+
 			bestSlices = new ArrayList<Slice>();
 			for (int i = 0; i < combination.length; i++) {
 				bestSlices.add(slices.get(combination[i]));
 			}
 
-			count2 = count;
+			count_aux = count;
 		}
-
-		// System.out.println(count + " & " + count2);
 
 	}
 
+	/**
+	 * All posible combinations of element of a specified size
+	 * 
+	 * @param elements
+	 * @param K
+	 */
 	public void combination(ArrayList<Slice> elements, int K) {
 
 		// get the length of the array
 		// e.g. for {'A','B','C','D'} => N = 4
+
 		int N = elements.size();
+
+		// System.out.println(N);
 
 		if (K > N) {
 			System.out.println("Invalid input, K > N");
@@ -259,10 +264,10 @@ public class PizzaCut {
 					// do something with the combination e.g. add to list or print
 					// print(combination, elements);
 					// print(combination, elements);
-					//printSlices(slices);
-					System.out.println(checkIfValid(combination, elements));
+					// printSlices(slices);
+					// System.out.println(checkIfValid(combination, elements));
 					if (checkIfValid(combination, elements)) {
-						System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeee");
+						// System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeee");
 						bestSlices(calculateCount(combination, elements), combination, elements);
 
 					}
@@ -284,13 +289,18 @@ public class PizzaCut {
 	}
 
 	public static int c(int n, int r) {
+
 		int nf = fact(n);
 		int rf = fact(r);
 		int nrf = fact(n - r);
-		int npr = nf / nrf;
-		int ncr = npr / rf;
 
-		// System.out.println("C("+n+","+r+") = "+ ncr);
+		int npr = 3;
+		int ncr = 3;
+
+		if (nrf != 0 && rf != 0) {
+			npr = nf / nrf;
+			ncr = npr / rf;
+		}
 
 		return ncr;
 	}
@@ -310,10 +320,19 @@ public class PizzaCut {
 
 	}
 
+	/**
+	 * Check if the slice combination is valid (all slices for a combination can not
+	 * overlap
+	 * 
+	 * @param combination
+	 * @param slices
+	 * @return
+	 */
+
 	public boolean checkIfValid(int[] combination, ArrayList<Slice> slices) {
 		Slice s;
 		Slice s2;
-		
+
 		boolean valid = true;
 
 		for (int i = 0; i < combination.length; i++) {
@@ -325,30 +344,29 @@ public class PizzaCut {
 				s = slices.get(combination[i]);
 				s2 = slices.get(combination[j]);
 
-				//printSlice(s);
-			//	printSlice(s2);
-		//		System.out.println("----------------------------");
+				if (s.getStarting_row() > s2.getEnd_row() || s.getEnd_row() < s2.getStarting_row()
+						|| s.getEnd_column() < s2.getStarting_column() || s.getStarting_column() > s2.getEnd_column()) {
 
-				if (s.getStarting_row() > s2.getEnd_row() || s.getEnd_row() < s2.getStarting_row() && s.getEnd_column() < s2.getStarting_column() || s.getStarting_column() > s2.getEnd_column()) { // R1 is below R1
-					
 					valid = valid && true;
-					System.out.println("eeeeeeeeeeeeeeeeeeeeeeee");
 
-				}else {
+				} else {
 					valid = valid && false;
-					//System.out.println(valid);
+
 				}
 			}
 		}
-		
-		//printSlices(slices);
-		
-		System.out.println(valid);
-		System.out.println("----------------------------");
 
 		return valid;
 
 	}
+
+	/**
+	 * Calculate score for a combination of slices
+	 * 
+	 * @param combination
+	 * @param slices
+	 * @return
+	 */
 
 	public static int calculateCount(int[] combination, ArrayList<Slice> slices) {
 		Slice s;
@@ -362,4 +380,13 @@ public class PizzaCut {
 		return count;
 
 	}
+
+	public ArrayList<Slice> getSlices() {
+		return slices;
+	}
+
+	public void setSlices(ArrayList<Slice> slices) {
+		this.slices = slices;
+	}
+
 }
